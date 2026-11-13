@@ -28,6 +28,25 @@ interface RequestOptions extends RequestInit {
   requiresAuth?: boolean
 }
 
+export const NETWORK_ERROR_MESSAGE =
+  'Não foi possível conectar ao servidor. Verifique sua conexão e tente novamente.'
+
+export function getErrorMessage(err: unknown, fallbackMessage: string): string {
+  if (err instanceof Error && err.message) {
+    const normalized = err.message.toLowerCase()
+    if (
+      normalized.includes('failed to fetch') ||
+      normalized.includes('networkerror') ||
+      normalized.includes('load failed') ||
+      normalized.includes('network request failed')
+    ) {
+      return NETWORK_ERROR_MESSAGE
+    }
+    return err.message
+  }
+  return fallbackMessage
+}
+
 export async function apiRequest<T>(
   endpoint: string,
   options: RequestOptions = {},
@@ -46,22 +65,29 @@ export async function apiRequest<T>(
     headers.set('Content-Type', 'application/json')
   }
 
-  const response = await fetch(url, {
-    ...options,
-    headers,
-  })
+  let response: Response
+  try {
+    response = await fetch(url, {
+      ...options,
+      headers,
+    })
+  } catch {
+    throw new Error(NETWORK_ERROR_MESSAGE)
+  }
 
   if (!response.ok) {
     let errorMessage = `Erro HTTP ${response.status}: ${response.statusText}`
     try {
       const errorData = await response.json()
       if (errorData.message) {
-        errorMessage = errorData.message
+        errorMessage = Array.isArray(errorData.message)
+          ? errorData.message.join(', ')
+          : errorData.message
       } else if (errorData.error) {
         errorMessage = errorData.error
       }
     } catch {}
-    throw new Error(errorMessage)
+    throw new Error(getErrorMessage(new Error(errorMessage), errorMessage))
   }
 
   if (response.status === 204) {

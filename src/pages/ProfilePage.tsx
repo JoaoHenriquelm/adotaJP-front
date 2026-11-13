@@ -2,6 +2,7 @@ import React, { useState } from 'react'
 import { User, Phone, MapPin, Mail, Calendar, Save, CheckCircle2, AlertCircle } from 'lucide-react'
 import { useAuth } from '../context/AuthContext'
 import { authApi } from '../api/auth.api'
+import { getErrorMessage } from '../api/client'
 import { formatPhone } from '../utils/masks'
 
 export const ProfilePage: React.FC = () => {
@@ -22,7 +23,7 @@ export const ProfilePage: React.FC = () => {
       await refreshUser()
       setSuccess('Dados de contato atualizados com sucesso!')
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Falha ao atualizar perfil.')
+      setError(getErrorMessage(err, 'Falha ao atualizar perfil.'))
     } finally {
       setLoading(false)
     }

@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { PlusCircle, Loader2, AlertCircle, CheckCircle2, ListFilter, RefreshCw } from 'lucide-react'
 import type { AnimalPost } from '../types'
 import { animalApi } from '../api/animal.api'
+import { getErrorMessage } from '../api/client'
 import { AnimalCard } from '../components/AnimalCard'
 import { ConfirmModal } from '../components/ConfirmModal'
 import { DeleteModal } from '../components/DeleteModal'
@@ -30,7 +31,7 @@ export const MyPostsPage: React.FC<Props> = ({ onNavigateCreate }) => {
       const res = await animalApi.listMyPosts({ limit: 50 })
       setAnimals(res.data)
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Falha ao carregar suas publicações.')
+      setError(getErrorMessage(err, 'Falha ao carregar suas publicações.'))
     } finally {
       setLoading(false)
     }
@@ -49,7 +50,7 @@ export const MyPostsPage: React.FC<Props> = ({ onNavigateCreate }) => {
       setSuccessMsg('Disponibilidade renovada por mais 30 dias com sucesso!')
       await fetchMyPosts()
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Falha ao renovar disponibilidade.')
+      setError(getErrorMessage(err, 'Falha ao renovar disponibilidade.'))
     } finally {
       setActionLoading(false)
     }
@@ -73,7 +74,7 @@ export const MyPostsPage: React.FC<Props> = ({ onNavigateCreate }) => {
       setAnimalToAdopt(null)
       await fetchMyPosts()
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Falha ao marcar como adotado.')
+      setError(getErrorMessage(err, 'Falha ao marcar como adotado.'))
     } finally {
       setActionLoading(false)
     }
@@ -94,7 +95,7 @@ export const MyPostsPage: React.FC<Props> = ({ onNavigateCreate }) => {
       setAnimalToDelete(null)
       await fetchMyPosts()
     } catch (err) {
-      setDeleteError(err instanceof Error ? err.message : 'Falha ao excluir a publicação.')
+      setDeleteError(getErrorMessage(err, 'Falha ao excluir a publicação.'))
     } finally {
       setDeleteLoading(false)
     }

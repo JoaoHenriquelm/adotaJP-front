@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { Heart, Loader2, AlertCircle } from 'lucide-react'
 import type { AnimalPost } from '../types'
 import { favoritesApi } from '../api/favorites.api'
+import { getErrorMessage } from '../api/client'
 import { AnimalCard } from '../components/AnimalCard'
 import { AdoptModal } from '../components/AdoptModal'
 
@@ -22,7 +23,7 @@ export const FavoritesPage: React.FC<Props> = ({ onNavigateHome }) => {
       const res = await favoritesApi.listFavorites({ limit: 50 })
       setAnimals(res.data)
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Falha ao carregar seus favoritos.')
+      setError(getErrorMessage(err, 'Falha ao carregar seus favoritos.'))
     } finally {
       setLoading(false)
     }

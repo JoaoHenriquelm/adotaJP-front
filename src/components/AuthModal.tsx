@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import { X, LogIn, UserPlus, AlertCircle, CheckCircle2 } from 'lucide-react'
 import { useAuth } from '../context/AuthContext'
+import { getErrorMessage } from '../api/client'
 import { formatCpf, formatPhone } from '../utils/masks'
 
 interface Props {
@@ -37,7 +38,7 @@ export const AuthModal: React.FC<Props> = ({ isOpen, onClose, initialMode = 'log
       await login({ email: loginEmail, password: loginPassword })
       onClose()
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Falha no login. Verifique suas credenciais.')
+      setError(getErrorMessage(err, 'Falha no login. Verifique suas credenciais.'))
     } finally {
       setLoading(false)
     }
@@ -62,7 +63,7 @@ export const AuthModal: React.FC<Props> = ({ isOpen, onClose, initialMode = 'log
         onClose()
       }, 800)
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Falha no cadastro. Verifique os dados.')
+      setError(getErrorMessage(err, 'Falha no cadastro. Verifique os dados.'))
     } finally {
       setLoading(false)
     }

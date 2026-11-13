@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { Search, Filter, Loader2, AlertCircle } from 'lucide-react'
 import type { AnimalPost } from '../types'
 import { animalApi } from '../api/animal.api'
+import { getErrorMessage } from '../api/client'
 import { SPECIES_OPTIONS } from '../constants/species'
 import { AnimalCard } from '../components/AnimalCard'
 import { AdoptModal } from '../components/AdoptModal'
@@ -37,11 +38,7 @@ export const HomePage: React.FC<Props> = ({ onPromptAuth }) => {
       setTotalPages(res.totalPages)
       setTotalCount(res.total)
     } catch (err) {
-      setError(
-        err instanceof Error
-          ? err.message
-          : 'Não foi possível carregar os animais no momento.',
-      )
+      setError(getErrorMessage(err, 'Não foi possível carregar os animais no momento.'))
     } finally {
       setLoading(false)
     }

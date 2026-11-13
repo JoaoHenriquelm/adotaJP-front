@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { X, Pencil, Upload, Loader2, AlertCircle, Lock, Calendar, User } from 'lucide-react'
 import type { AgeUnit, AnimalPost } from '../types'
 import { animalApi } from '../api/animal.api'
-import { getImageUrl } from '../api/client'
+import { getErrorMessage, getImageUrl } from '../api/client'
 import { SPECIES_OPTIONS } from '../constants/species'
 import { useAuth } from '../context/AuthContext'
 
@@ -97,11 +97,7 @@ export const EditAnimalModal: React.FC<Props> = ({
 
       onSuccess(updated)
     } catch (err) {
-      setError(
-        err instanceof Error
-          ? err.message
-          : 'Falha ao atualizar as informações da publicação.',
-      )
+      setError(getErrorMessage(err, 'Falha ao atualizar as informações da publicação.'))
     } finally {
       setLoading(false)
     }

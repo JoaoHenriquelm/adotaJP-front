@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import { Upload, PlusCircle, ArrowLeft, AlertCircle, Image as ImageIcon } from 'lucide-react'
 import { animalApi } from '../api/animal.api'
+import { getErrorMessage } from '../api/client'
 import { SPECIES_OPTIONS } from '../constants/species'
 
 interface Props {
@@ -60,7 +61,7 @@ export const CreateAnimalPage: React.FC<Props> = ({ onSuccess, onCancel }) => {
       await animalApi.create(formData)
       onSuccess()
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Falha ao cadastrar publicação do animal.')
+      setError(getErrorMessage(err, 'Falha ao cadastrar publicação do animal.'))
     } finally {
       setLoading(false)
     }
